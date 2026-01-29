@@ -6,11 +6,19 @@ export async function onRequestPost({ request, env }) {
   }
 
   if (password !== env.STROLI_PASSWORD) {
-    return new Response("Unauthorized", { status: 401 });
+    return new Response(
+      JSON.stringify({ ok: false }),
+      { status: 401, headers: { "Content-Type": "application/json" } }
+    );
   }
 
-  return new Response(
-    JSON.stringify({ ok: true }),
-    { headers: { "Content-Type": "application/json" } }
-  );
+  // PASSWORD CORRECTA → SERVIR ARCHIVO
+  const file = await fetch(new URL("/files/stroli-secret.zip", request.url));
+
+  return new Response(file.body, {
+    headers: {
+      "Content-Type": "application/zip",
+      "Content-Disposition": "attachment; filename=stroli-secret.zip"
+    }
+  });
 }
