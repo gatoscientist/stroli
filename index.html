@@ -1,115 +1,111 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>StroLi</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background: black;
-      font-family: Arial, Helvetica, sans-serif;
-      color: white;
-    }
-
-    body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .container {
-      text-align: center;
-    }
-
-    h1 {
-      font-size: 4rem;
-      letter-spacing: 0.1em;
-      margin-bottom: 30px;
-    }
-
-    input {
-      background: transparent;
-      border: 1px solid white;
-      color: white;
-      padding: 12px 20px;
-      font-size: 1.2rem;
-      width: 260px;
-      text-align: center;
-      outline: none;
-    }
-
-    #message {
-      margin-top: 15px;
-      font-size: 1rem;
-      height: 1.2em;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>StroLi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+html,body{
+margin:0;
+padding:0;
+width:100%;
+height:100%;
+background:black;
+color:white;
+font-family:Arial,Helvetica,sans-serif;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+.container{text-align:center;}
+h1{
+font-size:4rem;
+letter-spacing:0.2rem;
+margin-bottom:30px;
+}
+input{
+background:black;
+border:1px solid white;
+color:white;
+padding:10px 20px;
+font-size:1rem;
+width:240px;
+text-align:center;
+}
+input:focus{outline:none;}
+#msg{margin-top:15px;font-size:0.95rem;}
+.pixel{
+position:absolute;
+top:8px;
+left:8px;
+width:1px;
+height:1px;
+background:black;
+}
+</style>
 </head>
-
 <body>
-  <div class="container">
-    <h1>StroLi</h1>
+<a class="pixel" href="https://www.youtube.com/watch?v=-8Z6F-CVJSM" target="_blank"></a>
+<div class="container">
+<h1>StroLi</h1>
+<input id="password" type="password" placeholder="Contraseña" autocomplete="off">
+<div id="msg"></div>
+</div>
+<script>
+const input=document.getElementById("password");
+const msg=document.getElementById("msg");
 
-    <input
-      id="password"
-      type="password"
-      placeholder="Contraseña"
-      autocomplete="off"
-      onkeydown="if(event.key === 'Enter') checkPassword()"
-    />
+// Qué haces mirando aquí?
 
-    <div id="message"></div>
-  </div>
+input.addEventListener("keydown",async(e)=>{
+if(e.key!=="Enter")return;
 
-  <script>
-    async function checkPassword() {
-      const input = document.getElementById("password");
-      const msg = document.getElementById("message");
+// Admiro tu curiosidad
 
-      msg.textContent = "";
-      msg.style.color = "white";
+msg.textContent="";
+msg.style.color="white";
 
-      try {
-        const res = await fetch("/api/check", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ password: input.value })
-        });
+// Te dejaré una pista, ya que te estás tomando este tiempo
 
-        if (!res.ok) {
-          msg.textContent = "Contraseña incorrecta";
-          msg.style.color = "red";
-          return;
-        }
+try{
+const res=await fetch("/api/check",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({password:input.value})
+});
 
-        // 🔽 descarga del archivo
-        const blob = await res.blob();
-        const url = window.URL.createObjectURL(blob);
+// Str es por String
 
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "Archivo_StroLi_271.pdf"; // Qué haces mirando aquí? Te daré una pista por tu curiosidad. Celina destruyó el corazón de Leon
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+if(!res.ok){
+msg.textContent="Código de acceso equivocado";
+msg.style.color="red";
+return;
+}
 
-        window.URL.revokeObjectURL(url);
+// Celina fue culpable? Si ella destruyó el corazón de Leon, pero...
 
-        msg.textContent = "Acceso concedido";
-        msg.style.color = "lime";
+const blob=await res.blob();
+const url=window.URL.createObjectURL(blob);
+const a=document.createElement("a");
+a.href=url;
+a.download="Archivo_StroLi_271.pdf";
+document.body.appendChild(a);
+a.click();
+a.remove();
+window.URL.revokeObjectURL(url);
 
-      } catch (err) {
-        msg.textContent = "Error de conexión";
-        msg.style.color = "red";
-      }
-    }
-  </script>
+// Quien es Aaren?
+
+msg.textContent="Acceso concedido";
+msg.style.color="lime";
+
+// Quien es Lina?
+
+}catch(err){
+msg.textContent="Error de conexión";
+msg.style.color="red";
+}
+});
+</script>
 </body>
 </html>
-
-
