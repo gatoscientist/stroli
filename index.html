@@ -1,60 +1,7 @@
-<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<title>StroLi</title>
-
-<style>
-html,body{
-  margin:0;height:100%;
-  background:#000;color:#fff;
-  font-family:Arial,Helvetica,sans-serif;
-}
-body{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-.container{text-align:center;}
-h1{
-  font-size:72px;
-  letter-spacing:6px;
-  margin-bottom:40px;
-}
-input{
-  background:#000;
-  border:2px solid #fff;
-  color:#fff;
-  padding:12px;
-  font-size:18px;
-  width:280px;
-  text-align:center;
-}
-.msg{
-  margin-top:20px;
-  height:18px;
-}
-.ok{color:#0f0;}
-.err{color:#f55;}
-</style>
-</head>
-
-<body>
-<div class="container">
-  <h1>StroLi</h1>
-  <input id="pass" type="password" placeholder="Contraseña">
-  <div id="msg" class="msg"></div>
-</div>
-
 <script>
-const input = document.getElementById("pass");
-const msg = document.getElementById("msg");
-
-input.addEventListener("keydown", async e => {
-  if (e.key !== "Enter") return;
-
-  msg.textContent = "Verificando...";
-  msg.className = "msg";
+async function checkPassword() {
+  const input = document.getElementById("password");
+  const msg = document.getElementById("message");
 
   const res = await fetch("/api/check", {
     method: "POST",
@@ -62,15 +9,26 @@ input.addEventListener("keydown", async e => {
     body: JSON.stringify({ password: input.value })
   });
 
-  if (res.ok) {
-    msg.textContent = "Acceso concedido";
-    msg.className = "msg ok";
-    // próximo paso: mostrar PDF
-  } else {
+  if (!res.ok) {
     msg.textContent = "Contraseña incorrecta";
-    msg.className = "msg err";
+    msg.style.color = "red";
+    return;
   }
-});
+
+  // 🔽 AQUÍ ESTÁ LA MAGIA
+  const blob = await res.blob();
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "Holi.txt"; // luego será el PDF
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  window.URL.revokeObjectURL(url);
+
+  msg.textContent = "Acceso concedido";
+  msg.style.color = "lime";
+}
 </script>
-</body>
-</html>
