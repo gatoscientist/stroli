@@ -12,13 +12,18 @@ export async function onRequestPost({ request, env }) {
     );
   }
 
-  // PASSWORD CORRECTA → SERVIR ARCHIVO
-  const file = await fetch(new URL("/files/stroli-secret.zip", request.url));
+  // 🔓 PASSWORD OK → SERVIR Holi.txt
+  const fileUrl = new URL("/secret/Holi.txt", request.url);
+  const file = await fetch(fileUrl);
+
+  if (!file.ok) {
+    return new Response("File not found", { status: 404 });
+  }
 
   return new Response(file.body, {
     headers: {
-      "Content-Type": "application/zip",
-      "Content-Disposition": "attachment; filename=stroli-secret.zip"
+      "Content-Type": "text/plain",
+      "Content-Disposition": "attachment; filename=Holi.txt"
     }
   });
 }
